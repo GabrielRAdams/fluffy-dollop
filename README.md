@@ -13,12 +13,20 @@ assets required — the characters are emoji, so it runs anywhere with zero setu
 
 - **Steer:** Drag anywhere on screen. The dino accelerates toward your finger
   with a bit of momentum, so it feels weighty rather than robotic.
-- **Goal:** Get close enough to the monkey to catch it. +1 score, +3 seconds.
-- **The monkey:** Runs directly away from you when you get close, jukes
-  sideways to dodge, avoids getting cornered against the walls, and idly
-  wanders when you're far away.
-- **Difficulty ramp:** Each catch bumps the monkey's top speed, so a long run
-  gets progressively harder.
+- **Goal:** Get close enough to a monkey to catch it. Catching adds to your
+  score and puts 3 seconds back on the clock.
+- **The monkeys:** Run directly away when you get close, juke sideways to
+  dodge, avoid getting cornered against the walls, and idly wander when you're
+  far away.
+- **Combos 🔥:** Land catches within 2.5 seconds of each other to build a
+  streak multiplier (up to x9). The combo meter shows how long you have before
+  it resets, and each catch scores points equal to the current multiplier.
+- **Bananas 🍌:** Spawn around the field — grab them for a point and +2 seconds.
+- **Escalation:** Each catch bumps the monkeys' top speed, and every 5 points
+  adds another monkey to the field (up to four at once).
+- **Feel:** Haptic feedback on catches (heavier with bigger combos), a catch
+  particle burst, and a screen shake.
+- **Pause:** Tap the pause button any time to resume or quit to the menu.
 - **Round:** Starts at 20 seconds. Reach 0 and it's game over. High score is
   saved between sessions.
 
@@ -29,9 +37,10 @@ DinoChase/
 ├── DinoChase.xcodeproj/          # Xcode project
 └── DinoChase/
     ├── DinoChaseApp.swift        # App entry point (SwiftUI lifecycle)
-    ├── ContentView.swift         # Hosts SpriteView + menu/HUD/game-over overlays
-    ├── GameState.swift           # Observable state bridging SwiftUI and SpriteKit
-    ├── GameScene.swift           # The playfield: movement, monkey AI, catching
+    ├── ContentView.swift         # Hosts SpriteView + menu/HUD/pause/game-over overlays
+    ├── GameState.swift           # Observable state: score, timer, combos, phases
+    ├── GameScene.swift           # The playfield: movement, monkey AI, bananas, juice
+    ├── Haptics.swift             # Taptic feedback wrapper
     ├── Assets.xcassets/          # App icon + accent color
     └── Info.plist
 ```
@@ -53,5 +62,6 @@ iPad.
 
 Most of the "game feel" lives as constants near the top of `GameScene.swift`
 — `dinoMaxSpeed`, `dinoAccel`, `monkeyMaxSpeed`, `monkeyFleeRadius`,
-`catchDistance` — and the round length / time bonuses live in `GameState.swift`
-(`startingTime`, `bonusPerCatch`). Tweak away.
+`catchDistance`, `bananaInterval`, `maxBananas` — and the round length, time
+bonuses, and combo window live in `GameState.swift` (`startingTime`,
+`bonusPerCatch`, `bananaBonus`, `comboWindow`). Tweak away.

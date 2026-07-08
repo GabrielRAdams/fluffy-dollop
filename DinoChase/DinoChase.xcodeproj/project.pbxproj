@@ -11,6 +11,7 @@
 		A1000012000000000000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002000000000000001 /* ContentView.swift */; };
 		A1000013000000000000001 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000003000000000000001 /* GameState.swift */; };
 		A1000014000000000000001 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000004000000000000001 /* GameScene.swift */; };
+		A1000031000000000000001 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000030000000000000001 /* Haptics.swift */; };
 		A1000015000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000005000000000000001 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -20,6 +21,7 @@
 		A1000002000000000000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1000003000000000000001 /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
 		A1000004000000000000001 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		A1000030000000000000001 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		A1000005000000000000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000006000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +52,7 @@
 				A1000002000000000000001 /* ContentView.swift */,
 				A1000003000000000000001 /* GameState.swift */,
 				A1000004000000000000001 /* GameScene.swift */,
+				A1000030000000000000001 /* Haptics.swift */,
 				A1000005000000000000001 /* Assets.xcassets */,
 				A1000006000000000000001 /* Info.plist */,
 			);
@@ -137,6 +140,7 @@
 				A1000012000000000000001 /* ContentView.swift in Sources */,
 				A1000013000000000000001 /* GameState.swift in Sources */,
 				A1000014000000000000001 /* GameScene.swift in Sources */,
+				A1000031000000000000001 /* Haptics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
