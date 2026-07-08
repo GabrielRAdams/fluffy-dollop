@@ -68,6 +68,8 @@ struct StartMenuView: View {
             .multilineTextAlignment(.center)
             .padding(.horizontal, 32)
 
+            DifficultyPicker(game: game)
+
             if game.highScore > 0 {
                 Text("🏆 Best: \(game.highScore)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
@@ -91,6 +93,34 @@ struct StartMenuView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black.opacity(0.25).ignoresSafeArea())
+    }
+}
+
+struct DifficultyPicker: View {
+    @ObservedObject var game: GameState
+
+    var body: some View {
+        VStack(spacing: 6) {
+            Text("DIFFICULTY")
+                .font(.system(size: 13, weight: .bold, design: .rounded))
+                .foregroundColor(.white.opacity(0.8))
+                .tracking(2)
+
+            HStack(spacing: 10) {
+                ForEach(GameState.Difficulty.allCases) { level in
+                    let selected = game.difficulty == level
+                    Button(action: { game.difficulty = level }) {
+                        Text("\(level.emoji) \(level.label)")
+                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                            .foregroundColor(selected ? Color(red: 0.15, green: 0.35, blue: 0.15) : .white)
+                            .padding(.horizontal, 14).padding(.vertical, 9)
+                            .background(
+                                Capsule().fill(selected ? Color.yellow : Color.black.opacity(0.3))
+                            )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -145,14 +175,64 @@ struct HUDView: View {
                     .font(.system(size: 30, weight: .heavy, design: .rounded))
                     .foregroundColor(.yellow)
                     .shadow(color: .black.opacity(0.5), radius: 3, y: 2)
-                    .padding(.bottom, 60)
                     .transition(.scale.combined(with: .opacity))
                     .id(msg)
             }
+
+            // Roar power-up button, bottom-center.
+            RoarButton(game: game)
+                .padding(.bottom, 40)
+                .padding(.top, 8)
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: game.comboMultiplier)
         .animation(.easeOut(duration: 0.2), value: game.flashMessage)
     }
+}
+
+struct RoarButton: View {
+    @ObservedObject var game: GameState
+
+    var body: some View {
+        Button(action: { game.roar() }) {
+            ZStack {
+                Circle()
+                    .fill(Color.black.opacity(0.35))
+                    .frame(width: 84, height: 84)
+
+                // Charge ring fills clockwise as you catch monkeys.
+                Circle()
+                    .trim(from: 0, to: game.roarCharge)
+                    .stroke(game.roarReady ? Color.orange : Color.yellow,
+                            style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                    .frame(width: 78, height: 78)
+                    .rotationEffect(.degrees(-90))
+
+                Text("🦖")
+                    .font(.system(size: 40))
+
+                if game.roarReady {
+                    Text("ROAR")
+                        .font(.system(size: 12, weight: .heavy, design: .rounded))
+                        .foregroundColor(.orange)
+                        .offset(y: 34)
+                }
+            }
+            .scaleEffect(game.roarReady ? (pulse ? 1.12 : 1.0) : 1.0)
+            .shadow(color: game.roarReady ? .orange.opacity(0.7) : .clear, radius: 12)
+        }
+        .disabled(!game.roarReady)
+        .animation(.linear(duration: 0.2), value: game.roarCharge)
+        .onChange(of: game.roarReady) { ready in
+            pulse = false
+            if ready {
+                withAnimation(.easeInOut(duration: 0.55).repeatForever(autoreverses: true)) {
+                    pulse = true
+                }
+            }
+        }
+    }
+
+    @State private var pulse = false
 }
 
 struct ComboMeter: View {

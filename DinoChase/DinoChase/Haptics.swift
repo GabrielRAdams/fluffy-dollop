@@ -38,6 +38,13 @@ final class Haptics {
         light.prepare()
     }
 
+    /// A big, satisfying jolt for unleashing the roar.
+    func roar() {
+        heavy.impactOccurred(intensity: 1.0)
+        notify.notificationOccurred(.success)
+        heavy.prepare()
+    }
+
     func gameOver() {
         notify.notificationOccurred(.error)
     }

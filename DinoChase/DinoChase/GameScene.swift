@@ -56,6 +56,9 @@ final class GameScene: SKScene {
     private var isRunning = false
     private var isPaused_ = false
 
+    /// While > 0 the roar is active and every monkey is frozen in place.
+    private var freezeTimer: TimeInterval = 0
+
     // MARK: - Lifecycle
 
     override func didMove(to view: SKView) {
@@ -152,10 +155,31 @@ final class GameScene: SKScene {
     }
 
     func startNewGame() {
-        monkeyMaxSpeed = 300
+        monkeyMaxSpeed = gameState?.difficulty.monkeyBaseSpeed ?? 300
         bananaSpawnTimer = 0
+        freezeTimer = 0
         resetToIdle()
         isRunning = true
+    }
+
+    /// Freeze every monkey in place for `duration` seconds and play the roar
+    /// shockwave. Frozen monkeys are sitting ducks — clean up the combo!
+    func triggerRoar(duration: TimeInterval) {
+        guard isRunning else { return }
+        freezeTimer = duration
+        shakeCamera(strength: 20)
+        spawnShockwave(at: dino.position)
+
+        for monkey in monkeys {
+            monkey.velocity = .zero
+            // A scared little wobble for the duration of the freeze.
+            let wobble = SKAction.sequence([
+                .rotate(toAngle: 0.18, duration: 0.08),
+                .rotate(toAngle: -0.18, duration: 0.16),
+                .rotate(toAngle: 0, duration: 0.08)
+            ])
+            monkey.node.run(.repeat(wobble, count: Int(duration / 0.32) + 1), withKey: "scared")
+        }
     }
 
     func stopGame() {
@@ -200,6 +224,8 @@ final class GameScene: SKScene {
         gameState?.tick(delta)
         guard isRunning else { return } // tick may have ended the game
 
+        if freezeTimer > 0 { freezeTimer = max(0, freezeTimer - delta) }
+
         adjustMonkeyPopulation()
         updateDino(delta: CGFloat(delta))
         for monkey in monkeys { updateMonkey(monkey, delta: CGFloat(delta)) }
@@ -232,6 +258,17 @@ final class GameScene: SKScene {
 
     private func updateMonkey(_ monkey: MonkeyActor, delta: CGFloat) {
         let m = monkey.node
+
+        // Frozen by a roar: hold position (bar a tiny shiver) and don't flee.
+        if freezeTimer > 0 {
+            monkey.velocity.dx -= monkey.velocity.dx * 12 * delta
+            monkey.velocity.dy -= monkey.velocity.dy * 12 * delta
+            m.position.x += monkey.velocity.dx * delta
+            m.position.y += monkey.velocity.dy * delta
+            monkey.shadow.position = CGPoint(x: m.position.x, y: m.position.y - 18)
+            return
+        }
+
         let toDino = CGVector(dx: dino.position.x - m.position.x,
                               dy: dino.position.y - m.position.y)
         let dist = length(toDino)
@@ -318,14 +355,17 @@ final class GameScene: SKScene {
     // MARK: - Catching
 
     private func checkCatches() {
+        let ramp = gameState?.difficulty.speedRamp ?? 26
         for monkey in monkeys where distance(dino.position, monkey.node.position) < catchDistance {
             gameState?.caughtMonkey()
-            monkeyMaxSpeed = min(monkeyMaxSpeed + 26, 560)
+            monkeyMaxSpeed = min(monkeyMaxSpeed + ramp, 600)
             spawnCatchBurst(at: monkey.node.position)
             shakeCamera(strength: 10)
 
             // Respawn this monkey far from the dino for a fair restart.
             let p = farthestSpawnPoint()
+            monkey.node.removeAction(forKey: "scared")
+            monkey.node.zRotation = 0
             monkey.node.position = p
             monkey.shadow.position = CGPoint(x: p.x, y: p.y - 18)
             monkey.velocity = .zero
@@ -425,6 +465,33 @@ final class GameScene: SKScene {
             move.timingMode = .easeOut
             spark.run(.sequence([.group([move, .fadeOut(withDuration: 0.5)]), .removeFromParent()]))
         }
+    }
+
+    /// An expanding ring radiating out from the dino when it roars.
+    private func spawnShockwave(at point: CGPoint) {
+        let ring = SKShapeNode(circleOfRadius: 30)
+        ring.position = point
+        ring.strokeColor = SKColor.white.withAlphaComponent(0.9)
+        ring.lineWidth = 8
+        ring.fillColor = .clear
+        ring.zPosition = 25
+        addChild(ring)
+        ring.run(.sequence([
+            .group([.scale(to: 14, duration: 0.5), .fadeOut(withDuration: 0.5)]),
+            .removeFromParent()
+        ]))
+
+        let roarText = SKLabelNode(text: "ROAR!")
+        roarText.fontName = "AvenirNext-Heavy"
+        roarText.fontSize = 44
+        roarText.fontColor = .white
+        roarText.position = CGPoint(x: point.x, y: point.y + 50)
+        roarText.zPosition = 26
+        addChild(roarText)
+        roarText.run(.sequence([
+            .group([.moveBy(x: 0, y: 40, duration: 0.6), .fadeOut(withDuration: 0.6)]),
+            .removeFromParent()
+        ]))
     }
 
     private func shakeCamera(strength: CGFloat) {

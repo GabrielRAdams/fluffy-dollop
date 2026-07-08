@@ -22,13 +22,20 @@ assets required — the characters are emoji, so it runs anywhere with zero setu
   streak multiplier (up to x9). The combo meter shows how long you have before
   it resets, and each catch scores points equal to the current multiplier.
 - **Bananas 🍌:** Spawn around the field — grab them for a point and +2 seconds.
+- **Roar power-up 🦖:** Catching monkeys charges the roar meter. When it's full,
+  tap the roar button to freeze every monkey on the field for a few seconds —
+  perfect for cleaning up a big combo. Comes with a shockwave, a hefty haptic
+  jolt, and a screen shake.
 - **Escalation:** Each catch bumps the monkeys' top speed, and every 5 points
   adds another monkey to the field (up to four at once).
+- **Difficulty:** Choose Easy 🌱 / Normal 🔥 / Hard 💀 on the menu — it changes
+  the round length and how fast and aggressive the monkeys are. Your choice is
+  remembered between launches.
 - **Feel:** Haptic feedback on catches (heavier with bigger combos), a catch
   particle burst, and a screen shake.
 - **Pause:** Tap the pause button any time to resume or quit to the menu.
-- **Round:** Starts at 20 seconds. Reach 0 and it's game over. High score is
-  saved between sessions.
+- **Round:** Starts at 15–30 seconds depending on difficulty. Reach 0 and it's
+  game over. High score is saved between sessions.
 
 ## Project layout
 
@@ -38,10 +45,10 @@ DinoChase/
 └── DinoChase/
     ├── DinoChaseApp.swift        # App entry point (SwiftUI lifecycle)
     ├── ContentView.swift         # Hosts SpriteView + menu/HUD/pause/game-over overlays
-    ├── GameState.swift           # Observable state: score, timer, combos, phases
-    ├── GameScene.swift           # The playfield: movement, monkey AI, bananas, juice
+    ├── GameState.swift           # Observable state: score, timer, combos, roar, difficulty
+    ├── GameScene.swift           # The playfield: movement, monkey AI, bananas, roar, juice
     ├── Haptics.swift             # Taptic feedback wrapper
-    ├── Assets.xcassets/          # App icon + accent color
+    ├── Assets.xcassets/          # App icon (dino-chases-monkey) + accent color
     └── Info.plist
 ```
 
