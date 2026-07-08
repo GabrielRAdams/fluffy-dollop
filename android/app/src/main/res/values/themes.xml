@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- A minimal theme; the UI is drawn entirely by Jetpack Compose. The
+         NoActionBar + fullscreen-friendly base keeps chrome out of the game. -->
+    <style name="Theme.DinoChase" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#2E7D4F</item>
+        <item name="android:navigationBarColor">#2E7D4F</item>
+    </style>
+</resources>

@@ -9,6 +9,12 @@ How many can you bag before time's up?
 Built with **SwiftUI** (menus + HUD) and **SpriteKit** (gameplay). No image
 assets required — the characters are emoji, so it runs anywhere with zero setup.
 
+> **📱 Two platforms:** this repo ships the game for **both iOS and Android**.
+> The iOS app (SwiftUI + SpriteKit) lives in [`DinoChase/`](DinoChase); a native
+> **Android** port (Kotlin + Jetpack Compose) lives in [`android/`](android) —
+> see [`android/README.md`](android/README.md) to build and install it on a
+> phone. Both share the same gameplay, tuning, and feature set.
+
 ## Gameplay
 
 - **Steer:** Drag anywhere on screen. The dino accelerates toward your finger
